@@ -6,10 +6,17 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Service;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $services = Service::where('is_active', true)->get();
+    $categories = Category::with('products')->get();
+    $featuredProducts = Product::with('category')->take(6)->get();
+
+    return view('welcome', compact('services', 'categories', 'featuredProducts'));
 });
 
 // Users

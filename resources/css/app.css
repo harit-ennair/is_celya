@@ -2,8 +2,88 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Cormorant Garamond', Garamond, Georgia, serif;
+    --font-script: 'Great Vibes', cursive;
+    --color-burgundy: #3B0A12;
+    --color-burgundy-light: #5A1722;
+    --color-burgundy-dark: #220409;
+    --color-burgundy-deep: #150205;
+    --color-gold: #D4AF37;
+    --color-gold-light: #F7E7CE;
+    --color-neon-pink: #FF2A85;
+    --color-neon-pink-light: #FF80B5;
+    --color-neon-amber: #FFA726;
+    --color-cream: #FAF7F2;
+    --color-sand: #F3ECE2;
+}
+
+/* Neon Pink Lighting Effects */
+.neon-pink-glow {
+    color: #FFFFFF;
+    text-shadow:
+        0 0 4px #FFFFFF,
+        0 0 10px #FF80B5,
+        0 0 20px #FF2A85,
+        0 0 40px #FF2A85,
+        0 0 80px #D80064,
+        0 0 120px #D80064;
+}
+
+.neon-amber-glow {
+    color: #FFFDF5;
+    text-shadow:
+        0 0 4px #FFFFFF,
+        0 0 10px #FFE082,
+        0 0 20px #FFA726,
+        0 0 40px #FF9800,
+        0 0 70px #E65100;
+}
+
+.neon-box-pink {
+    box-shadow:
+        0 0 15px rgba(255, 42, 133, 0.45),
+        0 0 35px rgba(255, 42, 133, 0.25),
+        inset 0 0 15px rgba(255, 42, 133, 0.2);
+    border-color: #FF80B5;
+}
+
+.neon-box-amber {
+    box-shadow:
+        0 0 18px rgba(255, 167, 38, 0.45),
+        0 0 40px rgba(255, 167, 38, 0.2),
+        inset 0 0 12px rgba(255, 167, 38, 0.2);
+    border-color: #FFCA28;
+}
+
+.arch-neon-glow {
+    box-shadow:
+        0 0 25px 6px rgba(255, 183, 77, 0.4),
+        0 0 50px 15px rgba(255, 152, 0, 0.2);
+}
+
+@keyframes neon-subtle-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 12px rgba(255, 42, 133, 0.9));
+    }
+    50% {
+        filter: drop-shadow(0 0 24px rgba(255, 42, 133, 1));
+    }
+}
+
+.animate-neon-pulse {
+    animation: neon-subtle-pulse 3s infinite ease-in-out;
+}
+
+/* Accessibility: respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
