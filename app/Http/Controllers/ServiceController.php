@@ -40,14 +40,20 @@ class ServiceController extends Controller
             $query->where('price', '<=', (float) $request->query('max_price'));
         }
 
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->query('category_id'));
+        }
+
         if ($request->filled('search')) {
             $search = $request->query('search');
             $query->where('name', 'like', "%{$search}%");
         }
 
-        $services = $query->latest()->get()->map(function (Service $service) {
+        $services = $query->with('category')->latest()->get()->map(function (Service $service) {
             return [
                 'id' => $service->id,
+                'category_id' => $service->category_id,
+                'category_name' => $service->category?->name,
                 'name' => $service->name,
                 'description' => $service->description,
                 'price' => $service->price,
@@ -70,6 +76,7 @@ class ServiceController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
@@ -85,11 +92,14 @@ class ServiceController extends Controller
         }
 
         $service = Service::create($validated);
+        $service->load('category');
 
         return response()->json([
             'message' => 'Service created successfully',
             'service' => [
                 'id' => $service->id,
+                'category_id' => $service->category_id,
+                'category_name' => $service->category?->name,
                 'name' => $service->name,
                 'description' => $service->description,
                 'price' => $service->price,
@@ -106,9 +116,13 @@ class ServiceController extends Controller
      */
     public function show(Service $service): JsonResponse
     {
+        $service->load('category');
+
         return response()->json([
             'service' => [
                 'id' => $service->id,
+                'category_id' => $service->category_id,
+                'category_name' => $service->category?->name,
                 'name' => $service->name,
                 'description' => $service->description,
                 'price' => $service->price,
@@ -127,6 +141,7 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service): JsonResponse
     {
         $validated = $request->validate([
+            'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['sometimes', 'required', 'numeric', 'min:0'],
@@ -145,11 +160,14 @@ class ServiceController extends Controller
         }
 
         $service->update($validated);
+        $service->load('category');
 
         return response()->json([
             'message' => 'Service updated successfully',
             'service' => [
                 'id' => $service->id,
+                'category_id' => $service->category_id,
+                'category_name' => $service->category?->name,
                 'name' => $service->name,
                 'description' => $service->description,
                 'price' => $service->price,

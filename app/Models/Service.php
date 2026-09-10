@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'description', 'price', 'duration', 'image_path', 'is_active'])]
+#[Fillable(['category_id', 'name', 'description', 'price', 'duration', 'image_path', 'is_active'])]
 class Service extends Model
 {
     /** @use HasFactory<ServiceFactory> */
@@ -27,6 +28,16 @@ class Service extends Model
             'duration' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the category that the service belongs to.
+     *
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

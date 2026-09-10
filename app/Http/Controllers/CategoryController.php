@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $categories = Category::withCount('products')->get();
+        $categories = Category::withCount(['products', 'services'])->get();
 
         return response()->json([
             'data' => $categories,
@@ -44,7 +44,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category): JsonResponse
     {
-        $category->load('products');
+        $category->load(['products', 'services']);
 
         return response()->json([
             'category' => $category,

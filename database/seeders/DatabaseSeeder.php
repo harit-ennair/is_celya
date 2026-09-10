@@ -53,45 +53,15 @@ class DatabaseSeeder extends Seeder
 
         $allCustomers = collect([$demoCustomer])->merge($customers);
 
-        // 4. Create Services
-        $servicesData = [
-            [
-                'name' => 'Soin Visage Hydratant Express',
-                'description' => 'Un soin rapide et efficace pour revitaliser et réhydrater votre peau en profondeur.',
-                'price' => 45.00,
-                'duration' => 30,
-                'image_path' => 'services/visage-express.jpg',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Massage Relaxant aux Huiles Essentielles',
-                'description' => 'Un moment de pure détente pour relâcher les tensions musculaires et apaiser le corps et l\'esprit.',
-                'price' => 75.00,
-                'duration' => 60,
-                'image_path' => 'services/massage-relaxant.jpg',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Soin Signature Celya Anti-Âge',
-                'description' => 'Notre rituel anti-âge d\'exception stimulant le collagène pour un teint lissé et éclatant.',
-                'price' => 120.00,
-                'duration' => 90,
-                'image_path' => 'services/soin-anti-age.jpg',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Rituel Bien-Être & Gommage Corps',
-                'description' => 'Gommage aux cristaux marins suivi d\'une hydratation intense pour une peau douce et soyeuse.',
-                'price' => 85.00,
-                'duration' => 60,
-                'image_path' => 'services/rituel-corps.jpg',
-                'is_active' => true,
-            ],
-        ];
+        // 4. Seed Categories & Services
+        $this->call([
+            CategorySeeder::class,
+            ServiceSeeder::class,
+        ]);
 
-        $services = collect($servicesData)->map(fn (array $data) => Service::create($data));
+        $services = Service::where('is_active', true)->get();
 
-        // 5. Create Categories & Products
+        // 5. Create Products for Boutique Categories
         $categoriesData = [
             [
                 'name' => 'Soins du Visage',
@@ -151,10 +121,10 @@ class DatabaseSeeder extends Seeder
         $allProducts = collect();
 
         foreach ($categoriesData as $catData) {
-            $category = Category::create([
-                'name' => $catData['name'],
-                'description' => $catData['description'],
-            ]);
+            $category = Category::firstOrCreate(
+                ['name' => $catData['name']],
+                ['description' => $catData['description']]
+            );
 
             foreach ($catData['products'] as $prodData) {
                 $product = $category->products()->create([
