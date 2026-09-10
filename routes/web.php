@@ -12,11 +12,14 @@ use App\Models\Service;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $services = Service::where('is_active', true)->get();
+    $services = Service::where('is_active', true)->with('category')->get();
+    $serviceCategories = Category::whereHas('services', fn ($q) => $q->where('is_active', true))
+        ->with(['services' => fn ($q) => $q->where('is_active', true)])
+        ->get();
     $categories = Category::with('products')->get();
     $featuredProducts = Product::with('category')->take(6)->get();
 
-    return view('welcome', compact('services', 'categories', 'featuredProducts'));
+    return view('welcome', compact('services', 'serviceCategories', 'categories', 'featuredProducts'));
 });
 
 // Users
